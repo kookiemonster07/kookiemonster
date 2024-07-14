@@ -1,0 +1,71 @@
+import java.util.Scanner;
+import java.util.LinkedList;
+import java.util.TreeSet;
+public class BookDB {
+public static void main(String[] args) {
+Scanner sc = new Scanner(System.in);
+LinkedList<Book> books = new LinkedList<>();
+TreeSet<Book> sortedBooks = new TreeSet<>();
+books.add(new Book(123, "Malory Towers", "Enid Blyton", "JK
+Publications", 405));
+books.add(new Book(125, "Moving Fingers", "Agatha Christie", "JK
+Publications", 310));
+books.add(new Book(119, "Design & Analysis of Algo", "Anany Levitin", "RS
+Publications", 600));
+books.add(new Book(124, "Famous Five", "Enid Blyton", "JK Publications",
+500));
+System.out.println(books);
+for (Book book : books)
+sortedBooks.add(book);
+System.out.println("Sorted books: \n" + sortedBooks);
+System.out.println("Enter an author name: ");
+String auth = sc.nextLine(); 
+System.out.println("List of books written by " + auth);
+for (Book book : books)
+if (book.author.equalsIgnoreCase(auth))
+System.out.println(book);
+System.out.println("Enter price: ");
+LinkedList<Book> booksPrice = new LinkedList<Book>();
+int pri = sc.nextInt();
+for (Book book : books)
+if (book.price >= pri)
+booksPrice.add(book);
+System.out.println("List of book whose price is greater than or equal to
+" + pri + " is: \n" + booksPrice);
+}
+}
+class Book implements Comparable {
+int id;
+String title;
+String author;
+String publisher;
+double price;
+public Book(int id, String title, String author, String publisher, double
+price) {
+super();
+this.id = id;
+this.title = title;
+this.author = author;
+this.publisher = publisher;
+this.price = price;
+}
+@Override
+public String toString() {
+return "\nBook \n id=" + id + "\n title=" + title + "\n author=" + author
++ "\n publisher=" + publisher
++ "\n price="
++ price;
+}
+@Override
+public int compareTo(Object o) {
+double price1 = price;
+Book book2 = (Book) o;
+double price2 = book2.price;
+if (price1 < price2)
+return -1;
+else if (price1 > price2)
+return 1;
+else
+return 0;
+}
+}
