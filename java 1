@@ -1,0 +1,90 @@
+package prog2;
+import java.util.*;
+import java.util.ArrayList;
+public class main {
+public static void main(String[] args) {
+ArrayList<contact> co = new ArrayList<contact>();
+ArrayList<missedcall> mi = new ArrayList<missedcall>();
+co.add(new contact(1234,"name1"));
+co.add(new contact(9980,"name2"));
+co.add(new contact(3415,"name3"));
+System.out.println(co);
+while(true) {
+System.out.println("select 1.add missed call 2.display 3.delete");
+switch(new Scanner(System.in).nextInt()) {
+case 1:{
+System.out.println("enter missed call num");
+long num=new Scanner(System.in).nextLong();
+mi.add(new missedcall(num,new Date()));
+if(mi.size()>3) {
+mi.remove(0);}
+break;
+}
+case 2:{
+System.out.println(mi);
+break;
+}
+case 3:{
+System.out.println("delete using 1.index 2.number");
+int ch =new Scanner(System.in).nextInt();
+int i=1;
+if(ch==1) {
+for(missedcall mc:mi) {
+System.out.println(i++ +": "+mc.number);}
+System.out.println("enter the index to be deleted");
+int ch1=new Scanner(System.in).nextInt();
+mi.remove(ch-1);
+}
+else {
+System.out.println("enter number to be deleted");
+long n =new Scanner(System.in).nextLong();
+boolean found =false;
+for(contact c:co) {
+if(c.number==n) {
+found=true;
+break;
+}
+}
+if(!found) {
+co.add(new contact(n));
+System.out.println(co);
+}
+for(missedcall m:mi) {
+if(m.number==n) {
+mi.remove(m);
+break;
+}
+}
+}
+}
+}
+}
+}
+}
+package prog2;
+public class contact {
+long number;
+String name;
+public contact(long number,String name) {
+this.number=number;
+this.name=name;
+}
+public contact(long number) {
+this.name="private caller";
+this.number=number;
+}
+public String toString() {
+return number+" "+name;
+}
+package prog2;
+import java.util.*;
+public class missedcall {
+long number;
+String name;
+Date date;
+public missedcall(long number,Date date) {
+this.number=number;
+this.date=date;
+}
+public String toString() {
+return number+" "+date;}}}
