@@ -1,0 +1,196 @@
+import javax.swing.*;
+import java.awt.*;
+import java.util.HashMap;
+import java.util.Map;
+public class CustomerManagement {
+private static Map<String, String> customerMap = new HashMap<>();
+private static Map<String, String> itemMap = new HashMap<>();
+private static Map<String, Double> itemPriceMap = new HashMap<>();
+public static void main(String[] args) {
+itemMap.put("101", "Item A");
+itemMap.put("102", "Item B");
+itemMap.put("103", "Item C");
+itemPriceMap.put("101", 10.0);
+itemPriceMap.put("102", 20.0);
+itemPriceMap.put("103", 30.0);
+SwingUtilities.invokeLater(() -> new LoginFrame());
+}
+public static Map<String, String> getCustomerMap() {
+return customerMap;
+}
+public static Map<String, String> getItemMap() {
+return itemMap;
+}
+public static Map<String, Double> getItemPriceMap() {
+return itemPriceMap;
+}
+}
+class LoginFrame extends JFrame {
+public LoginFrame() {
+setTitle("Login");
+setVisible(true);
+setSize(300, 150);
+setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+setLayout(new GridBagLayout());
+JLabel userLabel = new JLabel("Username:");
+JLabel passLabel = new JLabel("Password:");
+JTextField userField = new JTextField(8);
+JPasswordField passField = new JPasswordField(8);
+JButton loginButton = new JButton("Login");
+addComponentsToGrid(userLabel, passLabel, userField, passField,
+loginButton);
+loginButton.addActionListener(e -> {
+if (userField.getText().equals("admin") && new
+String(passField.getPassword()).equals("admin")) {
+new CustomerFrame();
+dispose();
+} else {
+JOptionPane.showMessageDialog(this, "Invalid Login Credentials",
+"Error", JOptionPane.ERROR_MESSAGE);
+}
+});
+setVisible(true);
+}
+private void addComponentsToGrid(JComponent... components) {
+GridBagConstraints gc = new GridBagConstraints();
+gc.insets = new Insets(5, 5, 5, 5);
+for (int i = 0; i < components.length; i++) {
+gc.gridx = i % 2;
+gc.gridy = i / 2;
+add(components[i], gc);
+}
+}
+}
+class CustomerFrame extends JFrame {
+private JTextField customerIdField = new JTextField(15);
+private JTextField mobileField = new JTextField(15);
+private JTextField itemIdField = new JTextField(15);
+private JTextField quantityField = new JTextField(15);
+private JTextField itemNameField = new JTextField(15);
+private JTextField totalCostField = new JTextField(15);
+public CustomerFrame() {
+setTitle("Customer Management");
+setSize(400, 300);
+setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+setLayout(new GridBagLayout());
+JButton validateCustomerButton = new JButton("Validate Customer");
+JButton calculateButton = new JButton("Calculate");
+JButton discountButton = new JButton("Discount");
+JButton printButton = new JButton("Print");
+addComponentsToGrid(validateCustomerButton, calculateButton,
+discountButton, printButton);
+validateCustomerButton.addActionListener(e -> validateCustomer());
+calculateButton.addActionListener(e -> calculateTotalCost());
+discountButton.addActionListener(e -> showDiscountOptions());
+printButton.addActionListener(e -> printDetails());
+setVisible(true);
+}
+private void addComponentsToGrid(JComponent... components) {
+GridBagConstraints gc = new GridBagConstraints();
+gc.insets = new Insets(5, 5, 5, 5);
+for (int i = 0; i < components.length; i++) {
+gc.gridx = i % 2;
+gc.gridy = i / 2 + 2; // Start adding from the third row
+add(components[i], gc);
+}
+gc.gridx = 0;
+gc.gridy = 0;
+add(new JLabel("Customer ID:"), gc);
+gc.gridx = 1;
+add(customerIdField, gc);
+gc.gridx = 0;
+gc.gridy = 1;
+add(new JLabel("Mobile Number:"), gc);
+gc.gridx = 1;
+add(mobileField, gc);
+gc.gridx = 0;
+gc.gridy = 4;
+add(new JLabel("Item ID:"), gc);
+gc.gridx = 1;
+add(itemIdField, gc);
+gc.gridx = 0;
+gc.gridy = 5;
+add(new JLabel("Quantity:"), gc);
+gc.gridx = 1;
+add(quantityField, gc);
+gc.gridx = 0;
+gc.gridy = 6;
+add(new JLabel("Item Name:"), gc);
+gc.gridx = 1;
+add(itemNameField, gc);
+gc.gridx = 0;
+gc.gridy = 7;
+add(new JLabel("Total Cost:"), gc);
+gc.gridx = 1;
+add(totalCostField, gc);
+itemNameField.setEditable(false);
+totalCostField.setEditable(false);
+}
+private void validateCustomer() {
+String mobileNumber = mobileField.getText();
+String customerId;
+if (CustomerManagement.getCustomerMap().containsKey(mobileNumber)) {
+customerId = CustomerManagement.getCustomerMap().get(mobileNumber);
+} else {
+customerId = JOptionPane.showInputDialog(this, "Enter new Customer
+ID:", "New Customer",
+JOptionPane.INFORMATION_MESSAGE);
+if (customerId != null && !customerId.isEmpty()) {
+CustomerManagement.getCustomerMap().put(mobileNumber,
+customerId);
+} else {
+JOptionPane.showMessageDialog(this, "Customer ID cannot be
+empty", "Error", JOptionPane.ERROR_MESSAGE);
+return;
+}
+}
+customerIdField.setText(customerId);
+}
+private void calculateTotalCost() {
+String itemId = itemIdField.getText();
+int quantity;
+try {
+quantity = Integer.parseInt(quantityField.getText());
+} catch (NumberFormatException e) {
+JOptionPane.showMessageDialog(this, "Invalid quantity", "Error",
+JOptionPane.ERROR_MESSAGE);
+return;
+}
+if (CustomerManagement.getItemMap().containsKey(itemId)) {
+String itemName = CustomerManagement.getItemMap().get(itemId);
+double price = CustomerManagement.getItemPriceMap().get(itemId);
+double totalCost = price * quantity;
+itemNameField.setText(itemName);
+totalCostField.setText(String.valueOf(totalCost));
+} else {
+JOptionPane.showMessageDialog(this, "Invalid Item ID", "Error",
+JOptionPane.ERROR_MESSAGE);
+}
+}
+private void showDiscountOptions() {
+String[] discountOptions = { "10% off", "20% off", "30% off" };
+int discount = JOptionPane.showOptionDialog(this, "Choose Discount",
+"Discount Options",
+JOptionPane.DEFAULT_OPTION, JOptionPane.INFORMATION_MESSAGE,
+null, discountOptions, discountOptions[0]);
+if (discount >= 0) {
+JOptionPane.showMessageDialog(this, "You selected: " +
+discountOptions[discount], "Discount Selected",
+JOptionPane.INFORMATION_MESSAGE);
+}
+}
+private void printDetails() {
+String customerId = customerIdField.getText();
+String mobileNumber = mobileField.getText();
+String itemId = itemIdField.getText();
+String itemName = itemNameField.getText();
+String quantity = quantityField.getText();
+String totalCost = totalCostField.getText();
+String message = String.format(
+"Customer ID: %s\nMobile Number: %s\nItem ID: %s\nItem Name:
+%s\nQuantity: %s\nTotal Cost: %s",
+customerId, mobileNumber, itemId, itemName, quantity, totalCost);
+JOptionPane.showMessageDialog(this, message, "Customer Details",
+JOptionPane.INFORMATION_MESSAGE);
+}
+}
