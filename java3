@@ -1,0 +1,227 @@
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import javax.swing.*;
+public class StudentDetails {
+public static void main(String[] args) {
+new MyFrame();
+}
+}
+class MyFrame extends JFrame {
+TextPanel textPanel = new TextPanel();
+JTextArea textArea = new JTextArea();
+FormPanel formPanel = new FormPanel();
+ToolBar jtool = new ToolBar();
+public MyFrame() {
+super("My New Frame");
+setVisible(true);
+setSize(800, 600);
+setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+setLayout(new BorderLayout());
+add(jtool, BorderLayout.NORTH);
+add(textPanel, BorderLayout.CENTER);
+jtool.settextPanel(textPanel);
+add(formPanel, BorderLayout.WEST);
+formPanel.setTextListener(new TextListener() {
+public void getText(String text) {
+textPanel.appendText(text);
+}
+});
+}
+}
+class TextPanel extends JPanel {
+JTextArea textArea = new JTextArea();
+public TextPanel() {
+setLayout(new BorderLayout());
+add(new JScrollPane(textArea), BorderLayout.CENTER);
+}
+public void appendText(String string) {
+textArea.append(string);
+}
+}
+class ToolBar extends JPanel {
+TextPanel textPanel = new TextPanel();
+public ToolBar() {
+setLayout(new FlowLayout(FlowLayout.LEFT));
+setBorder(BorderFactory.createEtchedBorder());
+}
+public void settextPanel(TextPanel textPanel) {
+this.textPanel = textPanel;
+}
+}
+class FormPanel extends JPanel {
+TextListener textListener = new TextListener();
+FormPanel() {
+JLabel nameLabel = new JLabel("Name: ");
+JLabel usnLabel = new JLabel("USN: ");
+JLabel ageLabel = new JLabel("Age: ");
+JLabel addressLabel = new JLabel("Address: ");
+JLabel sgpa1Label = new JLabel("SGPA1: ");
+JLabel sgpa2Label = new JLabel("SGPA2: ");
+JLabel sgpa3Label = new JLabel("SGPA3: ");
+JLabel sgpa4Label = new JLabel("SGPA4: ");
+JTextField nametextField = new JTextField(8);
+JTextField usntextField = new JTextField(8);
+JTextField agetextField = new JTextField(8);
+JTextField addresstextField = new JTextField(8);
+JTextField sgpa1textField = new JTextField(8);
+JTextField sgpa2textField = new JTextField(8);
+JTextField sgpa3textField = new JTextField(8);
+JTextField sgpa4textField = new JTextField(8);
+JButton button = new JButton("Compute");
+JButton doneButton = new JButton("Done");
+JButton usnValid = new JButton("Valid");
+JButton ageValid = new JButton("valid");
+Dimension dim = getPreferredSize();
+dim.width = 300;
+setPreferredSize(dim);
+
+setLayout(new GridBagLayout());
+GridBagConstraints gc = new GridBagConstraints();
+gc.gridx = 0;
+gc.gridy = 0;
+add(nameLabel, gc);
+gc.gridx = 1;
+gc.gridy = 0;
+
+add(nametextField, gc);
+gc.gridx = 0;
+gc.gridy = 1;
+
+add(usnLabel, gc);
+gc.gridx = 1;
+gc.gridy = 1;
+
+add(usntextField, gc);
+gc.gridx = 2;
+gc.gridy = 1;
+add(usnValid, gc);
+usnValid.addActionListener(new ActionListener() {
+@Override
+public void actionPerformed(ActionEvent e) {
+
+String usnText = usntextField.getText();
+if (usnText.length() != 10) {
+JOptionPane.showMessageDialog(null, "InValid USN");
+} else if (!usnText.contains("1MS")) {
+JOptionPane.showMessageDialog(null, "InValid USN");
+} else
+JOptionPane.showMessageDialog(null, "Valid USN");
+}
+});
+gc.gridx = 0;
+gc.gridy = 2;
+
+add(ageLabel, gc);
+gc.gridx = 1;
+gc.gridy = 2;
+
+add(agetextField, gc);
+gc.gridx = 2;
+gc.gridy = 2;
+add(ageValid, gc);
+ageValid.addActionListener(new ActionListener() {
+@Override
+public void actionPerformed(ActionEvent e) {
+
+try {
+Integer ageText = Integer.parseInt(agetextField.getText());
+if (ageText < 18) {
+JOptionPane.showMessageDialog(null, "InValid Age");
+} else
+JOptionPane.showMessageDialog(null, "Valid Age");
+} catch (NumberFormatException ex) {
+JOptionPane.showMessageDialog(null, "NumberFormatException");
+}
+}
+});
+gc.gridx = 0;
+gc.gridy = 3;
+add(addressLabel, gc);
+gc.gridx = 1;
+gc.gridy = 3;
+
+add(addresstextField, gc);
+gc.gridx = 0;
+gc.gridy = 4;
+
+add(sgpa1Label, gc);
+gc.gridx = 1;
+gc.gridy = 4;
+
+add(sgpa1textField, gc);
+gc.gridx = 0;
+gc.gridy = 5;
+
+add(sgpa2Label, gc);
+gc.gridx = 1;
+gc.gridy = 5;
+
+add(sgpa2textField, gc);
+gc.gridx = 0;
+gc.gridy = 6;
+
+add(sgpa3Label, gc);
+gc.gridx = 1;
+gc.gridy = 6;
+
+add(sgpa3textField, gc);
+gc.gridx = 0;
+gc.gridy = 7;
+
+add(sgpa4Label, gc);
+gc.gridx = 1;
+gc.gridy = 7;
+
+add(sgpa4textField, gc);
+gc.gridx = 0;
+gc.gridy = 8;
+add(button, gc);
+button.addActionListener(new ActionListener() {
+@Override
+public void actionPerformed(ActionEvent e) {
+double sgpa1 = Double.parseDouble(sgpa1textField.getText());
+double sgpa2 = Double.parseDouble(sgpa2textField.getText());
+double sgpa3 = Double.parseDouble(sgpa3textField.getText());
+double sgpa4 = Double.parseDouble(sgpa4textField.getText());
+double cgpa = (sgpa1 + sgpa2 + sgpa3 + sgpa4) / 4;
+textListener.getText("CGPA: " + Double.toString(cgpa) + "\n");
+}
+});
+gc.gridx = 1;
+gc.gridy = 8;
+add(doneButton, gc);
+doneButton.addActionListener(new ActionListener() {
+@Override
+public void actionPerformed(ActionEvent e) {
+Collection<String> details = new ArrayList<>();
+String name = nametextField.getText();
+String usn = usntextField.getText();
+String age = agetextField.getText();
+String address = addresstextField.getText();
+details.add("Name: " + name);
+details.add("USN: " + usn);
+details.add("Age: " + age);
+details.add("Address: " + address);
+textListener.getText(details);
+}
+});
+}
+public void setTextListener(TextListener textListener) {
+this.textListener = textListener;
+}
+}
+class TextListener {
+public void getText(String string) {
+// Print the string to console for verification
+System.out.println(string);
+}
+public void getText(Collection<String> details) {
+StringBuilder sb = new StringBuilder();
+for (String detail : details) {
+sb.append(detail).append("\n");
+}
+getText(sb.toString());
+}
+}
